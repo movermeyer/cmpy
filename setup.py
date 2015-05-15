@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import setup, find_packages
+from setuptools import setup
 import cmpy
 
 
@@ -13,7 +13,6 @@ setup(
     author=cmpy.__author__,
     author_email=cmpy.__email__,
     url='https://github.com/edaniszewski/cmpy',
-    packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     keywords=['file compare', 'directory compare', 'compare', 'comparison'],
     classifiers=[
         'Intended Audience :: Developers',

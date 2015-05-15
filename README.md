@@ -1,6 +1,14 @@
 # cmpy
 A simple utility for detecting differences in directories and files.
 
+### Installation
+
+You can get cmpy with pip:
+
+```
+pip install cmpy
+```
+
 ### Overview
 
 Comparison of files and directories in `cmpy` is handled with the `FCompare` and `DCompare` classes, respectively. Files
