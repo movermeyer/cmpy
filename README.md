@@ -1,4 +1,8 @@
 # cmpy
+[![License](https://pypip.in/license/cmpy/badge.svg)](https://pypi.python.org/pypi/cmpy/)
+[![Latest Version](https://pypip.in/version/cmpy/badge.svg)](https://pypi.python.org/pypi/cmpy/)
+[![Downloads](https://pypip.in/download/cmpy/badge.svg)](https://pypi.python.org/pypi/cmpy/)
+
 A simple utility for detecting differences in directories and files.
 
 ### Installation
