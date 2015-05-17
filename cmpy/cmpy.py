@@ -129,6 +129,42 @@ def shallow_fcmp(s1, s2):
     return False
 
 
+def _recursive_walk(path):
+    """
+    Perform os.walk() on a given path and construct the full path for each recursively
+    found file and directory.
+
+    :param path: Path of the directory to walk through
+    :return: Tuple of all recursively found file names and directory names
+    :rtype: tuple
+    """
+    f, d = [], []
+    for root, dirs, files in os.walk(path):
+        f.extend([join(root.replace(path, ''), name) for name in files])
+        d.extend([join(root.replace(path, ''), name) for name in dirs])
+
+    return f, d
+
+
+def _surface_walk(path):
+    """
+    Perform os.listdir() on a given path and construct the full path for each found
+    file and directory.
+
+    :param path: Path of the directory to walk through
+    :return: Tuple of all found file names and directory names
+    :rtype: tuple
+    """
+    paths = [os.path.join(path, name) for name in sorted(os.listdir(path))]
+    d = filter(os.path.isdir, paths)
+    f = filter(os.path.isfile, paths)
+    return f, d
+
+
+# Lambda function for joining path names
+join = lambda root, name: os.path.join(root, name)
+
+
 # -----------------
 # Class Definitions
 # -----------------
@@ -181,80 +217,130 @@ class DCompare(Compare):
     recursive   : Flag for allowing comparison of any subdirectories
                   which may exist in the current directory. Defaults
                   to True
-    _dir1_cont  : The names of the entries in the first directory
-    _dir2_cont  : The names of the entries in the second directory
+    _dir1_f     : [Private] The names of the files in the first directory
+    _dir1_d     : [Private] The names of the directories in the first directory
+    _dir2_f     : [Private] The names of the files in the second directory
+    _dir2_d     : [Private] The names of the directories in the second directory
 
 
     Class Properties
     -------------------------------------------------------------------
-    dir1_contents : The names of the entries in the first directory
-    dir2_contents : The names of the entries in the second directory
-    dir1_unique   : The names of the entries in the first directory
-                    which are not in the second directory
-    dir2_unique   : The names of the entries in the second directory
-                    which are not in the first directory
-    common        : The names of the entries found in both directories
+    dir1_files       : The names of the files in the first directory
+    dir1_directories : The names of the directories in the first
+                       directory
+    dir1_contents    : The names of the entries in the first directory
+    dir2_files       : The names of the files in the second directory
+    dir2_directories : The names of the directories in the second
+                       directory
+    dir2_contents    : The names of the entries in the second directory
+    dir1_unique      : The names of the entries in the first directory
+                       which are not in the second directory
+    dir2_unique      : The names of the entries in the second directory
+                       which are not in the first directory
+    common           : The names of the entries found in both directories
     """
-    def __init__(self, dir1, dir2, shallow=True, buffer_size=BUFFER_SIZE, recursive=False):
+    def __init__(self, dir1, dir2, shallow=True, buffer_size=BUFFER_SIZE, recursive=True):
         super(DCompare, self).__init__(dir1, dir2, shallow, buffer_size)
         self.recursive = recursive
 
         if not stat.S_ISDIR(self.sig1[0]) or not stat.S_ISDIR(self.sig2[0]):
             raise DirectoryCompareException('Argument(s) are not directories.')
 
-        self._dir1_cont = None
-        self._dir2_cont = None
+        self._dir1_f, self._dir1_d = None, None
+        self._dir2_f, self._dir2_d = None, None
+
+    @property
+    def dir1_files(self):
+        """
+        All files found in the first directory.
+
+        :return: List of file names
+        :rtype: list
+        """
+        if self._dir1_f is None:
+            self._dir1_f, self._dir1_d = _recursive_walk(self.path1) if self.recursive else _surface_walk(self.path1)
+        return self._dir1_f
+
+    @property
+    def dir1_directories(self):
+        """
+        All directories found in the first directory.
+
+        :return: List of directory names
+        :rtype: list
+        """
+        if self._dir1_d is None:
+            self._dir1_f, self._dir1_d = _recursive_walk(self.path1) if self.recursive else _surface_walk(self.path1)
+        return self._dir1_d
 
     @property
     def dir1_contents(self):
         """
-        Names of the entries in the first directory.
+        The entries in the first directory.
 
         :return: List of file/directory names
         :rtype: list
         """
-        if not self._dir1_cont:
-            self._dir1_cont = sorted(os.listdir(self.path1))
-        return self._dir1_cont
+        return self.dir1_files + self.dir1_directories
+
+    @property
+    def dir2_files(self):
+        """
+        All files found in the second directory.
+
+        :return: List of file names
+        :rtype: list
+        """
+        if self._dir2_f is None:
+            self._dir2_f, self._dir2_d = _recursive_walk(self.path2) if self.recursive else _surface_walk(self.path2)
+        return self._dir2_f
+
+    @property
+    def dir2_directories(self):
+        """
+        All directories found in the second directory.
+
+        :return: List of directory names
+        :rtype: list
+        """
+        if self._dir2_d is None:
+            self._dir2_f, self._dir2_d = _recursive_walk(self.path2) if self.recursive else _surface_walk(self.path2)
+        return self._dir2_d
 
     @property
     def dir2_contents(self):
         """
-        Names of the entries in the second directory.
+        The entries in the second directory.
 
         :return: List of file/directory names
         :rtype: list
         """
-        if not self._dir2_cont:
-            self._dir2_cont = sorted(os.listdir(self.path2))
-        return self._dir2_cont
+        return self.dir2_files + self.dir2_directories
 
     @property
     def dir1_unique(self):
         """
-        Names of the entries in the first directory which are not in the
-        second directory.
+        The entries in the first directory which are not in the second directory.
 
         :return: List of file/directory names
         :rtype: list
         """
-        return list(set(self._dir1_cont).difference(self._dir2_cont))
+        return list(set(self.dir1_contents).difference(self.dir2_contents))
 
     @property
     def dir2_unique(self):
         """
-        Names of the entries in the second directory which are not in the
-        first directory.
+        The entries in the second directory which are not in the first directory.
 
         :return: List of file/directory names
         :rtype: list
         """
-        return list(set(self._dir2_cont).difference(self._dir1_cont))
+        return list(set(self.dir2_contents).difference(self.dir1_contents))
 
     @property
     def common(self):
         """
-        Names of the entries found in both directories.
+        The entries found in both directories.
 
         :return: List of file/directory names
         :rtype: list

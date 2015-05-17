@@ -82,10 +82,10 @@ d = DCompare('foo/bar/', 'bar/foo/', shallow=False)
 # Change the default buffer size (for deep comparison). Default is 2**10 bytes
 d = DCompare('foo/bar/', 'bar/foo/', buffer_size=2**8)
 
-# Perform a comparison non-recursively (default behavior)
+# Perform a comparison non-recursively 
 d = DCompare('foo/bar/', 'bar/foo/', recursive=False)
 
-# Perform a comparison recursively [NOTE: Unhandled in v0.1]
+# Perform a comparison recursively (default behavior)
 d = DCompare('foo/bar/', 'bar/foo/', recursive=True)
 ```
 
@@ -94,8 +94,20 @@ The `DCompare` class has various properties on it
 ```python
 d = DCompare('foo/bar/', 'bar/foo/')
 
+# The names of files in the first directory
+d.dir1_files
+
+# The names of directories in the first directory
+d.dir1_directories
+
 # The names of the entries in the first directory
 d.dir1_contents
+
+# The names of files in the second directory
+d.dir2_files
+
+# The names of directories in the second directory
+d.dir2_directories
 
 # The names of the entries in the second directory
 d.dir2_contents
