@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>cmpy by edaniszewski</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>cmpy</h1>
+        <p>A simple utility for detecting differences in directories and files.</p>
+
+        <p class="view"><a href="https://github.com/edaniszewski/cmpy">View the Project on GitHub <small>edaniszewski/cmpy</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/edaniszewski/cmpy/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/edaniszewski/cmpy/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/edaniszewski/cmpy">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="cmpy" class="anchor" href="#cmpy" aria-hidden="true"><span class="octicon octicon-link"></span></a>cmpy</h1>
+
+<p><a href="https://pypi.python.org/pypi/cmpy/"><img src="https://pypip.in/license/cmpy/badge.svg" alt="License"></a>
+<a href="https://pypi.python.org/pypi/cmpy/"><img src="https://pypip.in/version/cmpy/badge.svg" alt="Latest Version"></a>
+<a href="https://pypi.python.org/pypi/cmpy/"><img src="https://pypip.in/download/cmpy/badge.svg" alt="Downloads"></a></p>
+
+<p>A simple utility for detecting differences in directories and files.</p>
+
+<h3>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h3>
+
+<p>You can get cmpy with pip:</p>
+
+<pre><code>pip install cmpy
+</code></pre>
+
+<h3>
+<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h3>
+
+<p>Comparison of files and directories in <code>cmpy</code> is handled with the <code>FCompare</code> and <code>DCompare</code> classes, respectively. Files
+can also be compared using the static <code>shallow_fcmp()</code> and <code>deep_fcmp()</code> methods. As the names suggest, the former performs 
+a shallow comparison (less strict comparison, faster and less resource intensive), while the latter performs a deep comparison
+(strict comparison, slower, more resource intensive). </p>
+
+<p>For additional information on the comparison methods and classes, see the docstring in <code>cmpy.py</code>.</p>
+
+<h3>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h3>
+
+<h4>
+<a id="comparing-files" class="anchor" href="#comparing-files" aria-hidden="true"><span class="octicon octicon-link"></span></a>Comparing Files</h4>
+
+<div class="highlight highlight-python"><pre><span class="pl-c"># Instantiate a file compare object between to files</span>
+f <span class="pl-k">=</span> FCompare(<span class="pl-s"><span class="pl-pds">'</span>foo/bar<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>bar/foo<span class="pl-pds">'</span></span>)
+
+<span class="pl-c"># Compare the files (returns True or False)</span>
+f.compare()</pre></div>
+
+<p>Optional arguments may be provided</p>
+
+<div class="highlight highlight-python"><pre><span class="pl-c"># Perform a shallow comparison (default behavior)</span>
+f <span class="pl-k">=</span> FCompare(<span class="pl-s"><span class="pl-pds">'</span>foo/bar<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>bar/foo<span class="pl-pds">'</span></span>, <span class="pl-smi">shallow</span><span class="pl-k">=</span><span class="pl-c1">True</span>)
+
+<span class="pl-c"># Perform a deep comparison</span>
+f <span class="pl-k">=</span> FCompare(<span class="pl-s"><span class="pl-pds">'</span>foo/bar<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>bar/foo<span class="pl-pds">'</span></span>, <span class="pl-smi">shallow</span><span class="pl-k">=</span><span class="pl-c1">False</span>)
+
+<span class="pl-c"># Change the default buffer size (for deep comparison). Default is 2**10 bytes</span>
+f <span class="pl-k">=</span> FCompare(<span class="pl-s"><span class="pl-pds">'</span>foo/bar<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>bar/foo<span class="pl-pds">'</span></span>, <span class="pl-smi">buffer_size</span><span class="pl-k">=</span><span class="pl-c1">2</span><span class="pl-k">**</span><span class="pl-c1">8</span>)</pre></div>
+
+<p>Files can also be compared without instantiating an object</p>
+
+<div class="highlight highlight-python"><pre><span class="pl-c"># Shallow comparison</span>
+shallow_fcmp(<span class="pl-s"><span class="pl-pds">'</span>foo/bar<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>bar/foo<span class="pl-pds">'</span></span>)
+
+<span class="pl-c"># Deep comparison</span>
+deep_fcmp(<span class="pl-s"><span class="pl-pds">'</span>foo/bar<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>bar/foo<span class="pl-pds">'</span></span>)
+
+<span class="pl-c"># Deep comparison specifying buffer size</span>
+deep_fcmp(<span class="pl-s"><span class="pl-pds">'</span>foo/bar<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>bar/foo<span class="pl-pds">'</span></span>, <span class="pl-c1">2</span><span class="pl-k">**</span><span class="pl-c1">8</span>)</pre></div>
+
+<h4>
+<a id="comparing-directories" class="anchor" href="#comparing-directories" aria-hidden="true"><span class="octicon octicon-link"></span></a>Comparing Directories:</h4>
+
+<div class="highlight highlight-python"><pre><span class="pl-c"># Instantiate a directory compare object between to directories</span>
+d <span class="pl-k">=</span> DCompare(<span class="pl-s"><span class="pl-pds">'</span>foo/bar/<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>bar/foo/<span class="pl-pds">'</span></span>)
+
+<span class="pl-c"># Compare the directories (returns True or False)</span>
+d.compare()</pre></div>
+
+<p>Optional arguments may be provided</p>
+
+<div class="highlight highlight-python"><pre><span class="pl-c"># Perform a shallow comparison (default behavior)</span>
+d <span class="pl-k">=</span> DCompare(<span class="pl-s"><span class="pl-pds">'</span>foo/bar/<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>bar/foo/<span class="pl-pds">'</span></span>, <span class="pl-smi">shallow</span><span class="pl-k">=</span><span class="pl-c1">True</span>)
+
+<span class="pl-c"># Perform a deep comparison</span>
+d <span class="pl-k">=</span> DCompare(<span class="pl-s"><span class="pl-pds">'</span>foo/bar/<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>bar/foo/<span class="pl-pds">'</span></span>, <span class="pl-smi">shallow</span><span class="pl-k">=</span><span class="pl-c1">False</span>)
+
+<span class="pl-c"># Change the default buffer size (for deep comparison). Default is 2**10 bytes</span>
+d <span class="pl-k">=</span> DCompare(<span class="pl-s"><span class="pl-pds">'</span>foo/bar/<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>bar/foo/<span class="pl-pds">'</span></span>, <span class="pl-smi">buffer_size</span><span class="pl-k">=</span><span class="pl-c1">2</span><span class="pl-k">**</span><span class="pl-c1">8</span>)
+
+<span class="pl-c"># Perform a comparison non-recursively </span>
+d <span class="pl-k">=</span> DCompare(<span class="pl-s"><span class="pl-pds">'</span>foo/bar/<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>bar/foo/<span class="pl-pds">'</span></span>, <span class="pl-smi">recursive</span><span class="pl-k">=</span><span class="pl-c1">False</span>)
+
+<span class="pl-c"># Perform a comparison recursively (default behavior)</span>
+d <span class="pl-k">=</span> DCompare(<span class="pl-s"><span class="pl-pds">'</span>foo/bar/<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>bar/foo/<span class="pl-pds">'</span></span>, <span class="pl-smi">recursive</span><span class="pl-k">=</span><span class="pl-c1">True</span>)</pre></div>
+
+<p>The <code>DCompare</code> class has various properties on it</p>
+
+<div class="highlight highlight-python"><pre>d <span class="pl-k">=</span> DCompare(<span class="pl-s"><span class="pl-pds">'</span>foo/bar/<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>bar/foo/<span class="pl-pds">'</span></span>)
+
+<span class="pl-c"># The names of files in the first directory</span>
+d.dir1_files
+
+<span class="pl-c"># The names of directories in the first directory</span>
+d.dir1_directories
+
+<span class="pl-c"># The names of the entries in the first directory</span>
+d.dir1_contents
+
+<span class="pl-c"># The names of files in the second directory</span>
+d.dir2_files
+
+<span class="pl-c"># The names of directories in the second directory</span>
+d.dir2_directories
+
+<span class="pl-c"># The names of the entries in the second directory</span>
+d.dir2_contents
+
+<span class="pl-c"># The names of the entries in the first directory which are not in the second directory</span>
+d.dir1_unique
+
+<span class="pl-c"># The names of the entries in the second directory which are not in the first directory</span>
+d.dir2_unique
+
+<span class="pl-c"># The names of the entries found in both directories</span>
+d.common</pre></div>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/edaniszewski">edaniszewski</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
